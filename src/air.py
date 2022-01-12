@@ -2,7 +2,7 @@ from deta import Deta
 from src.key import KEY
 
 
-class BlackHole:
+class AirDrive:
     def __init__(self, drive: Deta.Drive):
         self.drive = drive
 
