@@ -40,9 +40,14 @@ class BlackHole:
                         size += len(chunk)
                         f.write(chunk)
             print(f"[↓] {file_name} | {round(size * 10 ** (-6), 3)} MB")
-            return open(file_name, 'rb').read()
         else:
-            raise FileNotFoundError(f"file '{file_name}' does not exist!")
+            raise FileNotFoundError(f"file `{file_name}` does not exist!")
+
+    def cache(self, file_name: str):
+        resp = self.drive.get(file_name)
+        if resp:
+            byte_list = [chunk for chunk in resp.iter_chunks(1024)]
+            return b''.join(byte_list)
 
     def delete(self, file_name: str = None, file_name_list: list = None):
         if file_name:
