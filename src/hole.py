@@ -16,8 +16,7 @@ class BlackHole:
             raise ValueError("Use at least 8 characters!")
         if username == password:
             raise ValueError("Username and password can't be the same!")
-        drive_name = f'{username}_{password}'
-        drive = Deta(project_key).Drive(drive_name)
+        drive = Deta(project_key).Drive(f'{username}_{password}')
         drive.put(name='.blackhole', data=b'54 48 49 53 20 49 53 20 46 52 45 45 20 44 57 21')
         return cls(drive=drive)
 
@@ -31,8 +30,7 @@ class BlackHole:
             raise ValueError("Use at least 8 characters!")
         if username == password:
             raise ValueError("Username and password can't be the same!")
-        drive_name = f'{username}_{password}'
-        drive = Deta(KEY).Drive(drive_name)
+        drive = Deta(KEY).Drive(f'{username}_{password}')
         drive.put(name='.blackhole', data=b'54 48 49 53 20 49 53 20 46 52 45 45 20 44 57 21')
         return cls(drive=drive)
 
