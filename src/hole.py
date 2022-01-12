@@ -7,6 +7,21 @@ class BlackHole:
         self.drive = drive
 
     @classmethod
+    def private_login(cls, project_key: str, username: str, password: str):
+        if len(username) < 5:
+            raise ValueError("Use at least 5 characters!")
+        if password == project_key:
+            raise ValueError("Don't use project key as password!")
+        if len(password) < 8:
+            raise ValueError("Use at least 8 characters!")
+        if username == password:
+            raise ValueError("Username and password can't be the same!")
+        drive_name = f'{username}_{password}'
+        drive = Deta(project_key).Drive(drive_name)
+        drive.put(name='.blackhole', data=b'54 48 49 53 20 49 53 20 46 52 45 45 20 44 57 21')
+        return cls(drive=drive)
+
+    @classmethod
     def login(cls, username: str, password: str):
         if len(username) < 5:
             raise ValueError("Use at least 5 characters!")
