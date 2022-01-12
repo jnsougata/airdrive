@@ -1,5 +1,5 @@
 from deta import Deta
-from src.key import KEY
+from .key import KEY
 
 
 class AirDrive:
