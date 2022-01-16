@@ -1,6 +1,6 @@
 ![logo](ui/air.png)     
 ## AirDrive
-AirDrive lets you store **unlimited** files to cloud for **free**.**Upload** & **download** files from your personal drive at any time using its super-fast API. 
+AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & **download** files from your personal drive at any time using its super-fast API. 
 
 ### Installation
 `pip install airdrive`
