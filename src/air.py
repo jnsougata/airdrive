@@ -22,6 +22,7 @@ class AirDrive:
             files = drive.list().get('names')
             if files:
                 raise Exception(f"Account `{username}` already exists!")
+            print(f"Account `{username}` created!")
             return cls(drive=drive)
         except AssertionError:
             raise ValueError(f"Invalid login token used!")
@@ -51,21 +52,33 @@ class AirDrive:
     def download(self, file_name: str):
         resp = self.drive.get(file_name)
         if resp:
+            print(f'[↓] Downloading `{file_name}`...')
             with open(file_name, "wb") as f:
                 size = 0
                 for chunk in resp.iter_chunks(1024):
                     if chunk:
                         size += len(chunk)
                         f.write(chunk)
-            print(f"[↓] {file_name} | {round(size * 10 ** (-6), 3)} MB")
+            print(f"[↓] Completed: {file_name} | {round(size * 10 ** (-6), 3)} MB")
         else:
             raise FileNotFoundError(f"file `{file_name}` does not exist!")
 
     def cache(self, file_name: str):
         resp = self.drive.get(file_name)
         if resp:
+            print(f'[🗎] Caching `{file_name}`...')
             byte_list = [chunk for chunk in resp.iter_chunks(1024)]
+            print(f'[🗎] Done: `{file_name}`...')
             return b''.join(byte_list)
+        raise FileNotFoundError(f"file `{file_name}` does not exist!")
+
+    def download_all(self):
+        for file_name in self.files():
+            self.download(file_name)
+
+    def cache_all(self):
+        for file_name in self.files():
+            yield self.cache(file_name)
 
     def delete(self, file_name: str = None, file_name_list: list = None):
         if file_name:
