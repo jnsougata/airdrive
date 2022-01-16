@@ -1,5 +1,5 @@
-from deta import Deta
 from .key import KEY
+from deta import Deta
 
 
 class AirDrive:
@@ -7,21 +7,8 @@ class AirDrive:
         self.drive = drive
 
     @classmethod
-    def private_login(cls, project_key: str, username: str, password: str):
-        if len(username) < 5:
-            raise ValueError("Use at least 5 characters!")
-        if password == project_key:
-            raise ValueError("Don't use project key as password!")
-        if len(password) < 8:
-            raise ValueError("Use at least 8 characters!")
-        if username == password:
-            raise ValueError("Username and password can't be the same!")
-        drive = Deta(project_key).Drive(f'{username}_{password}')
-        drive.put(name='.blackhole', data=b'54 48 49 53 20 49 53 20 46 52 45 45 20 44 57 21')
-        return cls(drive=drive)
-
-    @classmethod
-    def login(cls, username: str, password: str):
+    def create(cls, username: str, password: str, private_key: str = None):
+        key = private_key if private_key else KEY
         if len(username) < 5:
             raise ValueError("Use at least 5 characters!")
         if password == KEY:
@@ -30,9 +17,27 @@ class AirDrive:
             raise ValueError("Use at least 8 characters!")
         if username == password:
             raise ValueError("Username and password can't be the same!")
-        drive = Deta(KEY).Drive(f'{username}_{password}')
-        drive.put(name='.blackhole', data=b'54 48 49 53 20 49 53 20 46 52 45 45 20 44 57 21')
-        return cls(drive=drive)
+        try:
+            drive = Deta(key).Drive(f'{username}_{password}')
+            files = drive.list().get('names')
+            if files:
+                raise Exception(f"Account `{username}` already exists!")
+            return cls(drive=drive)
+        except AssertionError:
+            raise ValueError(f"Invalid login token used!")
+
+    @classmethod
+    def login(cls, username: str, password: str, private_key: str = None):
+        key = private_key if private_key else KEY
+        try:
+            drive = Deta(key).Drive(f'{username}_{password}')
+            files = drive.list().get('names')
+            if files:
+                return cls(drive=drive)
+            else:
+                raise Exception(f"Account `{username}` doesn't exist!")
+        except AssertionError:
+            raise ValueError(f"Invalid login token used!")
 
     def files(self):
         return self.drive.list().get('names')
@@ -72,7 +77,7 @@ class AirDrive:
 
     def delete_all(self):
         self.drive.delete_many(self.files())
-        self.drive.put(name='.blackhole', data=b'54 48 49 53 20 49 53 20 46 52 45 45 20 44 57 21')
+        self.drive.put(name='.air', data=b' ')
         print("[!] Deleted all files!")
 
     def delete_account(self):
