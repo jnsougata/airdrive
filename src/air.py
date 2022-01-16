@@ -1,3 +1,4 @@
+import json
 from .key import KEY
 from deta import Deta
 
@@ -5,6 +6,9 @@ from deta import Deta
 class AirDrive:
     def __init__(self, drive: Deta.Drive):
         self.drive = drive
+
+    def __repr__(self):
+        return f"<AirDrive>"
 
     @classmethod
     def create(cls, username: str, password: str, private_key: str = None):
@@ -23,7 +27,7 @@ class AirDrive:
             if files:
                 raise Exception(f"Account `{username}` already exists!")
             print(f"Account `{username}` created!")
-            return cls(drive=drive)
+            return cls(drive)
         except AssertionError:
             raise ValueError(f"Invalid login token used!")
 
@@ -34,7 +38,7 @@ class AirDrive:
             drive = Deta(key).Drive(f'{username}_{password}')
             files = drive.list().get('names')
             if files:
-                return cls(drive=drive)
+                return cls(drive)
             else:
                 raise Exception(f"Account `{username}` doesn't exist!")
         except AssertionError:
@@ -43,11 +47,16 @@ class AirDrive:
     def files(self):
         return self.drive.list().get('names')
 
-    def upload(self, file_path: str, file_name: str):
+    def upload(self, local_file_path: str, remote_file_name: str):
         with open(file_path, "rb") as f:
             content = f.read()
             self.drive.put(name=file_name, data=content)
             print(f"[↑] {file_name} | {round(len(content) * 10 ** (-6), 3)} MB")
+
+    def rename(self, old_name: str, new_name: str):
+        content = self.cache(old_name)
+        self.drive.put(name=new_name, data=content)
+        print(f"[!] Renamed `{old_name}` to `{new_name}`")
 
     def download(self, file_name: str):
         resp = self.drive.get(file_name)
@@ -75,10 +84,6 @@ class AirDrive:
     def download_all(self):
         for file_name in self.files():
             self.download(file_name)
-
-    def cache_all(self):
-        for file_name in self.files():
-            yield self.cache(file_name)
 
     def delete(self, file_name: str = None, file_name_list: list = None):
         if file_name:
