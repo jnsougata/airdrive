@@ -48,7 +48,7 @@ class AirDrive:
         return self.drive.list().get('names')
 
     def upload(self, local_file_path: str, remote_file_name: str):
-        with open(file_path, "rb") as f:
+        with open(local_file_path, "rb") as f:
             content = f.read()
             self.drive.put(name=remote_file_name, data=content)
             print(f"[↑] {remote_file_name} | {round(len(content) * 10 ** (-6), 3)} MB")
@@ -94,8 +94,12 @@ class AirDrive:
             print(f"[!] Deleted `{' , '.join(file_names)}`")
 
     def delete_all(self):
-        self.drive.delete_many(self.files())
-        self.drive.put(name='.air', data=b' ')
+        files = self.files()
+        try:
+            files.remove('.air')
+        except ValueError:
+            self.drive.put(name='.air', data=b'')
+        self.drive.delete_many(files)
         print("[!] Deleted all files!")
 
     def delete_account(self):
