@@ -29,7 +29,7 @@ class AirDrive:
             print(f"Account `{username}` created!")
             return cls(drive)
         except AssertionError:
-            raise ValueError(f"Invalid login token used!")
+            raise ValueError("Used an invalid login token!")
 
     @classmethod
     def login(cls, username: str, password: str, private_key: str = None):
@@ -42,7 +42,7 @@ class AirDrive:
             else:
                 raise Exception(f"Account `{username}` doesn't exist!")
         except AssertionError:
-            raise ValueError(f"Invalid login token used!")
+            raise ValueError("Used an invalid login token!")
 
     def files(self):
         return self.drive.list().get('names')
@@ -50,8 +50,8 @@ class AirDrive:
     def upload(self, local_file_path: str, remote_file_name: str):
         with open(file_path, "rb") as f:
             content = f.read()
-            self.drive.put(name=file_name, data=content)
-            print(f"[↑] {file_name} | {round(len(content) * 10 ** (-6), 3)} MB")
+            self.drive.put(name=remote_file_name, data=content)
+            print(f"[↑] {remote_file_name} | {round(len(content) * 10 ** (-6), 3)} MB")
 
     def rename(self, old_name: str, new_name: str):
         content = self.cache(old_name)
@@ -85,13 +85,13 @@ class AirDrive:
         for file_name in self.files():
             self.download(file_name)
 
-    def delete(self, file_name: str = None, file_name_list: list = None):
+    def delete(self, file_name: str = None, file_names: list = None):
         if file_name:
             self.drive.delete(file_name)
             print(f"[!] Deleted `{file_name}`")
-        if file_name_list:
-            self.drive.delete_many(file_name_list)
-            print(f"[!] Deleted `{' , '.join(file_name_list)}`")
+        if file_names:
+            self.drive.delete_many(file_names)
+            print(f"[!] Deleted `{' , '.join(file_names)}`")
 
     def delete_all(self):
         self.drive.delete_many(self.files())
