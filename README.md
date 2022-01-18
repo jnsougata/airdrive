@@ -16,7 +16,7 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
 
 ## Methods
 
-###`files`  
+### `files`  
 - `files()`
   - ####Returns:
     Returns list of file names existing in the drive
@@ -25,55 +25,55 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
 - `download(file_name)`
     - Parameters:
       - **file_name** (str): Name of the file to be downloaded
-    - ####Returns:
+    - #### Returns:
       Returns None & downloads the file to the current directory
 
-###`download_all`
+### `download_all`
 - `download_all()`
     - ####Returns:
       - Returns None & downloads all files in the drive to the current directory
-###`upload`
+### `upload`
 - `upload(local_file_path, remote_file_name)`
     - Parameters:
       - **local_file_path** (str): Path to the file to be uploaded
       - **remote_file_name** (str): The name with the file to be uploaded
-    - ####Returns:
+    - #### Returns:
       Returns None & uploads the file to the drive
-    - ###Note:
+    - ### Note:
       - If the file already exists in the drive, it will be overwritten
 ###`rename`
 - `rename(old_file_name, new_file_name)`
     - Parameters:
       - **old_file_name** (str): The old name of file to be renamed
       - **new_file_name** (str): New name of the file
-    - ####Returns:
+    - #### Returns:
       Returns None & re-uploads the file in the drive with new name
-    - ###Note:
+    - ### Note:
       - Might take a while for large files
-###`cache`
+### `cache`
 - `cache(file_name)`
     - Parameters:
       - **file_name** (str): Name of the file to be cached
-    - ####Returns:
+    - #### Returns:
       Returns the file content as bytes
-###`file_stream`
+### `file_stream`
 - `file_stream(file_name)`
     - Parameters:
       - **file_name** (str): Name of the file to be streamed
-    - ####Returns:
+    - #### Returns:
       Returns the file content as stream
-###`delete`
+### `delete`
 - `delete(file_name)`
     - Parameters:
       - **file_name** (str): Name of the file to be deleted
-    - ####Returns:
+    - #### Returns:
       Returns None & deletes the file from the drive permanently
-###`delete_all`
+### `delete_all`
 - `delete_all()`
-    - ####Returns:
+    - #### Returns:
       Returns None & deletes all files from the drive permanently
-###`delete_account`
+### `delete_account`
 - `delete_account()`
-    - ####Returns:
+    - #### Returns:
       Returns None & deletes the account from the drive permanently
 
