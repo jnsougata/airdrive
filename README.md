@@ -41,7 +41,7 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
       Returns None & uploads the file to the drive
     - ### Note:
       - If the file already exists in the drive, it will be overwritten
-###`rename`
+### `rename`
 - `rename(old_file_name, new_file_name)`
     - Parameters:
       - **old_file_name** (str): The old name of file to be renamed
