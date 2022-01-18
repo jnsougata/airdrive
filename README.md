@@ -20,14 +20,20 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
 - `files()`
   - #### Returns:
     Returns list of file names existing in the drive
-    
+### `create_folder`
+- `create_folder(folder_name)`
+  - Parameters:
+  - **folder_name** (str): Name of the folder to be created
+  - #### Returns:
+    Returns the name of the folder created
 ### `download`
 - `download(file_name)`
     - Parameters:
       - **file_name** (str): Name of the file to be downloaded
     - #### Returns:
       Returns None & downloads the file to the current directory
-
+    - #### Raises:
+      - `FileNotFoundError`: If the file is not found in the drive
 ### `download_all`
 - `download_all()`
     - #### Returns:
@@ -63,6 +69,8 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
       - **file_name** (str): Name of the file to be streamed
     - #### Returns:
       Returns the file content as stream
+    - ### Raises:
+      - `FileNotFoundError`: If the file is not found in the drive
 ### `delete`
 - `delete(file_name)`
     - Parameters:
@@ -77,4 +85,6 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
 - `delete_account()`
     - #### Returns:
       Returns None & deletes the account from the drive permanently
+    - ### Raises:
+      - `Exception`: If the file is not found in the drive
 

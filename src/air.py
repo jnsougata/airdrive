@@ -124,6 +124,5 @@ class AirDrive:
     def delete_account(self):
         try:
             self.drive.delete_many(self.files())
-            print("[!] Account deleted!")
         except AssertionError:
-            print("[!] Account not found!")
+            raise Exception("Account not found!")
