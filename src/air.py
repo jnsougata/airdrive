@@ -82,7 +82,7 @@ class AirDrive:
             self,
             remote_file_name: str,
             local_file_path: str = None,
-            file_content: Union[bytes, string, io.TextIOBase, io.BufferedIOBase, io.RawIOBase] = None,
+            file_content: Union[bytes, str, io.TextIOBase, io.BufferedIOBase, io.RawIOBase] = None,
             folder_name: str = None
     ) -> None:
         """
