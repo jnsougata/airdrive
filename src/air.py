@@ -1,5 +1,7 @@
+import io
 from .key import KEY
 from deta import Deta
+from typing import Union
 
 
 class AirDrive:
@@ -76,23 +78,35 @@ class AirDrive:
         self.drive.put(name=path, data=b' ')
         print(f"[+] Created folder `{folder_name}`")
 
-    def upload(self, local_file_path: str, remote_file_name: str, folder_name: str = None) -> None:
+    def upload(
+            self,
+            remote_file_name: str,
+            local_file_path: str = None,
+            file_content: Union[bytes, string, io.TextIOBase, io.BufferedIOBase, io.RawIOBase] = None,
+            folder_name: str = None
+    ) -> None:
         """
         Upload a file to the drive
         :param local_file_path: path to the local file
         :param remote_file_name: name with which the file will be saved on the drive
         :param folder_name: folder in which the file will be saved on the drive (optional)
+        :param file_content: content of the file to be sent (optional)
         :return: None
         """
-        with open(local_file_path, "rb") as f:
-            content = f.read()
-            if folder_name:
-                path = f'{folder_name}/{remote_file_name}'.replace('//', '/')
-                self.drive.put(name=path, data=content)
-                print(f"[↑] {path} | {round(len(content) * 10 ** (-6), 3)} MB")
-            else:
-                self.drive.put(name=remote_file_name, data=content)
-                print(f"[↑] {remote_file_name} | {round(len(content) * 10 ** (-6), 3)} MB")
+        if local_file_path:
+            with open(local_file_path, "rb") as f:
+                content = f.read()
+        elif file_content:
+            content = file_content
+        else:
+            raise ValueError("You must specify a file path or content!")
+        if folder_name:
+            path = f'{folder_name}/{remote_file_name}'.replace('//', '/')
+            self.drive.put(name=path, data=content)
+            print(f"[↑] {path} | {round(len(content) * 10 ** (-6), 3)} MB")
+        else:
+            self.drive.put(name=remote_file_name, data=content)
+            print(f"[↑] {remote_file_name} | {round(len(content) * 10 ** (-6), 3)} MB")
 
     def rename(self, old_name: str, new_name: str) -> None:
         """
