@@ -25,7 +25,6 @@ class AirDrive:
             drive = Deta(key).Drive(f'{username}_{password}')
             files = drive.list().get('names')
             if files:
-                print(f"Account `{username}` already exists!")
                 return cls.login(username, password, private_key)
             print(f"Account `{username}` created!")
             drive.put(name='.air', data=b' ')
@@ -40,7 +39,7 @@ class AirDrive:
             drive = Deta(key).Drive(f'{username}_{password}')
             files = drive.list().get('names')
             if files:
-                print(f"Logged in as `{username}`.")
+                print(f"Logged in as `{username}`")
                 print('-----')
                 return cls(drive)
             else:
@@ -51,11 +50,21 @@ class AirDrive:
     def files(self):
         return self.drive.list().get('names')
 
-    def upload(self, local_file_path: str, remote_file_name: str):
+    def create_folder(self, folder_name: str):
+        path = f'{folder_name}/.air'
+        self.drive.put(name=path, data=b' ')
+        print(f"[+] Created folder `{folder_name}`")
+
+    def upload(self, local_file_path: str, remote_file_name: str, folder_name: str = None):
         with open(local_file_path, "rb") as f:
             content = f.read()
-            self.drive.put(name=remote_file_name, data=content)
-            print(f"[↑] {remote_file_name} | {round(len(content) * 10 ** (-6), 3)} MB")
+            if folder_name:
+                path = f'{folder_name}/{remote_file_name}'.replace('//', '/')
+                self.drive.put(name=path, data=content)
+                print(f"[↑] {path} | {round(len(content) * 10 ** (-6), 3)} MB")
+            else:
+                self.drive.put(name=remote_file_name, data=content)
+                print(f"[↑] {remote_file_name} | {round(len(content) * 10 ** (-6), 3)} MB")
 
     def rename(self, old_name: str, new_name: str):
         content = self.cache(old_name)
@@ -108,7 +117,7 @@ class AirDrive:
         try:
             files.remove('.air')
         except ValueError:
-            self.drive.put(name='.air', data=b'')
+            self.drive.put(name='.air', data=b' ')
         self.drive.delete_many(files)
         print("[!] Deleted all files!")
 
