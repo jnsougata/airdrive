@@ -27,6 +27,7 @@ class AirDrive:
             if files:
                 raise Exception(f"Account `{username}` already exists!")
             print(f"Account `{username}` created!")
+            drive.put(name='.air', data=b'')
             return cls(drive)
         except AssertionError:
             raise ValueError("Used an invalid login token!")
