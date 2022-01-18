@@ -1,4 +1,3 @@
-import json
 from .key import KEY
 from deta import Deta
 
@@ -12,6 +11,13 @@ class AirDrive:
 
     @classmethod
     def create(cls, username: str, password: str, private_key: str = None):
+        """
+        Create a new account
+        :param username : new username for the account
+        :param password: password for the account
+        :param private_key: https://deta.sh project key (optional)
+        :return: AirDrive object
+        """
         key = private_key if private_key else KEY
         if len(username) < 5:
             raise ValueError("Use at least 5 characters!")
@@ -34,6 +40,13 @@ class AirDrive:
 
     @classmethod
     def login(cls, username: str, password: str, private_key: str = None):
+        """
+        Login to an existing account
+        :param username: username associated the account
+        :param password: password associated the account
+        :param private_key: https://deta.sh project key (optional)
+        :return: AirDrive object
+        """
         key = private_key if private_key else KEY
         try:
             drive = Deta(key).Drive(f'{username}_{password}')
@@ -47,15 +60,30 @@ class AirDrive:
         except AssertionError:
             raise ValueError("Used an invalid login token!")
 
-    def files(self):
+    def files(self) -> list:
+        """
+        :return: list of files in the account
+        """
         return self.drive.list().get('names')
 
-    def create_folder(self, folder_name: str):
+    def create_folder(self, folder_name: str) -> None:
+        """
+        Create a new folder in the drive
+        :param folder_name: the name of the folder to create
+        :return: None
+        """
         path = f'{folder_name}/.air'
         self.drive.put(name=path, data=b' ')
         print(f"[+] Created folder `{folder_name}`")
 
-    def upload(self, local_file_path: str, remote_file_name: str, folder_name: str = None):
+    def upload(self, local_file_path: str, remote_file_name: str, folder_name: str = None) -> None:
+        """
+        Upload a file to the drive
+        :param local_file_path: path to the local file
+        :param remote_file_name: name with which the file will be saved on the drive
+        :param folder_name: folder in which the file will be saved on the drive (optional)
+        :return: None
+        """
         with open(local_file_path, "rb") as f:
             content = f.read()
             if folder_name:
@@ -66,12 +94,23 @@ class AirDrive:
                 self.drive.put(name=remote_file_name, data=content)
                 print(f"[↑] {remote_file_name} | {round(len(content) * 10 ** (-6), 3)} MB")
 
-    def rename(self, old_name: str, new_name: str):
+    def rename(self, old_name: str, new_name: str) -> None:
+        """
+        Rename a file on the drive
+        :param old_name: old name of the file
+        :param new_name: new name of the file to be saved
+        :return: None
+        """
         content = self.cache(old_name)
         self.drive.put(name=new_name, data=content)
         print(f"[!] Renamed `{old_name}` to `{new_name}`")
 
-    def download(self, file_name: str):
+    def download(self, file_name: str) -> None:
+        """
+        Download a file from the drive
+        :param file_name: name/path of the file to download
+        :return: None
+        """
         resp = self.drive.get(file_name)
         if resp:
             print(f'[↓] Downloading `{file_name}`...')
@@ -85,13 +124,23 @@ class AirDrive:
         else:
             raise FileNotFoundError(f"file `{file_name}` does not exist!")
 
-    def file_stream(self, file_name: str):
+    def file_stream(self, file_name: str) -> bytes:
+        """
+        Download a file from the drive and return its content (streamable)
+        :param file_name: name/path of the file to stream
+        :return: bytes
+        """
         stream = self.drive.get(file_name)
         if stream:
             return stream
         raise FileNotFoundError(f"file `{file_name}` does not exist!")
 
-    def cache(self, file_name: str):
+    def cache(self, file_name: str) -> bytes:
+        """
+        Download a file from the drive and return its content (bytes)
+        :param file_name: name/path of the file to cache
+        :return: bytes
+        """
         resp = self.drive.get(file_name)
         if resp:
             print(f'[🗎] Caching `{file_name}`...')
@@ -100,11 +149,21 @@ class AirDrive:
             return b''.join(byte_list)
         raise FileNotFoundError(f"file `{file_name}` does not exist!")
 
-    def download_all(self):
+    def download_all(self) -> None:
+        """
+        Download all files in the account to the current directory
+        :return: None
+        """
         for file_name in self.files():
             self.download(file_name)
 
-    def delete(self, file_name: str = None, file_names: list = None):
+    def delete(self, file_name: str = None, file_names: list = None) -> None:
+        """
+        Delete a file from the drive
+        :param file_name: file name/path to delete
+        :param file_names: list of file names/paths to delete
+        :return: None
+        """
         if file_name:
             self.drive.delete(file_name)
             print(f"[!] Deleted `{file_name}`")
@@ -112,7 +171,11 @@ class AirDrive:
             self.drive.delete_many(file_names)
             print(f"[!] Deleted `{' , '.join(file_names)}`")
 
-    def delete_all(self):
+    def delete_all(self) -> None:
+        """
+        Delete all files in the drive
+        :return: None
+        """
         files = self.files()
         try:
             files.remove('.air')
@@ -121,7 +184,11 @@ class AirDrive:
         self.drive.delete_many(files)
         print("[!] Deleted all files!")
 
-    def delete_account(self):
+    def delete_account(self) -> None:
+        """
+        Deletes the entire account
+        :return: None
+        """
         try:
             self.drive.delete_many(self.files())
         except AssertionError:
