@@ -18,7 +18,7 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
 
 ### `files`  
 - `files()`
-  - ####Returns:
+  - #### Returns:
     Returns list of file names existing in the drive
     
 ### `download`
@@ -30,7 +30,7 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
 
 ### `download_all`
 - `download_all()`
-    - ####Returns:
+    - #### Returns:
       - Returns None & downloads all files in the drive to the current directory
 ### `upload`
 - `upload(local_file_path, remote_file_name)`
