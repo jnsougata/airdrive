@@ -26,11 +26,9 @@ class AirDrive:
             files = drive.list().get('names')
             if files:
                 print(f"Account `{username}` already exists!")
-                print(f"Logged in as `{username}` instead.")
-                print('-----')
                 return cls.login(username, password, private_key)
             print(f"Account `{username}` created!")
-            drive.put(name='.air', data=b'')
+            drive.put(name='.air', data=b' ')
             return cls(drive)
         except AssertionError:
             raise ValueError("Used an invalid login token!")
@@ -77,6 +75,12 @@ class AirDrive:
             print(f"[↓] Completed: {file_name} | {round(size * 10 ** (-6), 3)} MB")
         else:
             raise FileNotFoundError(f"file `{file_name}` does not exist!")
+
+    def file_stream(self, file_name: str):
+        stream = self.drive.get(file_name)
+        if stream:
+            return stream
+        raise FileNotFoundError(f"file `{file_name}` does not exist!")
 
     def cache(self, file_name: str):
         resp = self.drive.get(file_name)
