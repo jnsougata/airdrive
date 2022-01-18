@@ -25,7 +25,10 @@ class AirDrive:
             drive = Deta(key).Drive(f'{username}_{password}')
             files = drive.list().get('names')
             if files:
-                raise Exception(f"Account `{username}` already exists!")
+                print(f"Account `{username}` already exists!")
+                print(f"Logged in as `{username}` instead.")
+                print('-----')
+                return cls.login(username, password, private_key)
             print(f"Account `{username}` created!")
             drive.put(name='.air', data=b'')
             return cls(drive)
@@ -39,6 +42,8 @@ class AirDrive:
             drive = Deta(key).Drive(f'{username}_{password}')
             files = drive.list().get('names')
             if files:
+                print(f"Logged in as `{username}`.")
+                print('-----')
                 return cls(drive)
             else:
                 raise Exception(f"Account `{username}` doesn't exist!")
