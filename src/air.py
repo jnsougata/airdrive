@@ -1,7 +1,9 @@
 import io
+import requests
 from .key import KEY
 from deta import Deta
 from typing import Union
+from time import perf_counter
 
 
 class AirDrive:
@@ -34,7 +36,7 @@ class AirDrive:
             files = drive.list().get('names')
             if files:
                 return cls.login(username, password, private_key)
-            print(f"Account `{username}` created!")
+            print(f"Account ({username}) created!")
             drive.put(name='.air', data=b' ')
             return cls(drive)
         except AssertionError:
@@ -54,11 +56,11 @@ class AirDrive:
             drive = Deta(key).Drive(f'{username}_{password}')
             files = drive.list().get('names')
             if files:
-                print(f"Logged in as `{username}`")
+                print(f"Logged in as ({username})")
                 print('-----')
                 return cls(drive)
             else:
-                raise Exception(f"Account `{username}` doesn't exist!")
+                raise Exception(f"Account ({username}) doesn't exist!")
         except AssertionError:
             raise ValueError("Used an invalid login token!")
 
@@ -76,14 +78,14 @@ class AirDrive:
         """
         path = f'{folder_name}/.air'
         self.drive.put(name=path, data=b' ')
-        print(f"[+] Created folder `{folder_name}`")
+        print(f"[+] Created folder | {folder_name}")
 
     def upload(
             self,
             remote_file_name: str,
+            folder_name: str = None,
             local_file_path: str = None,
-            file_content: Union[bytes, str, io.TextIOBase, io.BufferedIOBase, io.RawIOBase] = None,
-            folder_name: str = None
+            file_content: Union[bytes, str, io.TextIOBase, io.BufferedIOBase, io.RawIOBase] = None
     ) -> None:
         """
         Upload a file to the drive
@@ -102,11 +104,39 @@ class AirDrive:
             raise ValueError("You must specify a file path or content!")
         if folder_name:
             path = f'{folder_name}/{remote_file_name}'.replace('//', '/')
-            self.drive.put(name=path, data=content)
-            print(f"[↑] {path} | {round(len(content) * 10 ** (-6), 3)} MB")
         else:
-            self.drive.put(name=remote_file_name, data=content)
-            print(f"[↑] {remote_file_name} | {round(len(content) * 10 ** (-6), 3)} MB")
+            path = remote_file_name
+        print(f'[↑] Uploading | {path} | ...')
+        self.drive.put(name=path, data=content)
+        timer_start = perf_counter()
+        timer_end = perf_counter()
+        elapsed = round(timer_end - timer_start)
+        print(f"[•] Completed | {file_name} | {round(len(r.content) * 10 ** (-6), 3)} MB | {elapsed}s")
+
+    def upload_from_url(
+            self,
+            url: str,
+            file_name: str,
+            folder_name: str = None
+    ) -> None:
+        """
+        Upload a file from a URL to the drive
+        :param url: URL from which the file content will be downloaded
+        :param file_name: name with which the file will be saved on the drive
+        :param folder_name: folder in which the file will be saved on the drive (optional)
+        :return: None
+        """
+        if folder_name:
+            path = f'{folder_name}/{file_name}'.replace('//', '/')
+        else:
+            path = file_name
+        print(f'[↑] Uploading | {path} | ...')
+        timer_start = perf_counter()
+        r = requests.get(url)
+        self.drive.put(name=path, data=r.content)
+        timer_end = perf_counter()
+        elapsed = round(timer_end - timer_start)
+        print(f"[•] Completed | {path} | {round(len(r.content) * 10 ** (-6), 3)} MB | {elapsed}s")
 
     def rename(self, old_name: str, new_name: str) -> None:
         """
@@ -127,16 +157,19 @@ class AirDrive:
         """
         resp = self.drive.get(file_name)
         if resp:
-            print(f'[↓] Downloading `{file_name}`...')
+            print(f'[↓] Downloading | {file_name} | ...')
+            timer_start = perf_counter()
             with open(file_name, "wb") as f:
                 size = 0
                 for chunk in resp.iter_chunks(1024):
                     if chunk:
                         size += len(chunk)
                         f.write(chunk)
-            print(f"[↓] Completed: {file_name} | {round(size * 10 ** (-6), 3)} MB")
+            timer_end = perf_counter()
+            elapsed = round(timer_end - timer_start)
+            print(f"[•] Completed | {file_name} | {round(size * 10 ** (-6), 3)} MB | {elapsed}s")
         else:
-            raise FileNotFoundError(f"file `{file_name}` does not exist!")
+            raise FileNotFoundError(f"file ({file_name}) does not exist!")
 
     def file_stream(self, file_name: str) -> bytes:
         """
@@ -147,7 +180,7 @@ class AirDrive:
         stream = self.drive.get(file_name)
         if stream:
             return stream
-        raise FileNotFoundError(f"file `{file_name}` does not exist!")
+        raise FileNotFoundError(f"file ({file_name}) does not exist!")
 
     def cache(self, file_name: str) -> bytes:
         """
@@ -157,11 +190,15 @@ class AirDrive:
         """
         resp = self.drive.get(file_name)
         if resp:
-            print(f'[🗎] Caching `{file_name}`...')
+            print(f'[🗎] Caching | {file_name} | ...')
+            timer_start = perf_counter()
             byte_list = [chunk for chunk in resp.iter_chunks(1024)]
-            print(f'[🗎] Done: `{file_name}`...')
-            return b''.join(byte_list)
-        raise FileNotFoundError(f"file `{file_name}` does not exist!")
+            content = b''.join(byte_list)
+            timer_end = perf_counter()
+            elapsed = round(timer_end - timer_start)
+            print(f'[🗎] Completed | {file_name} | {round(len(content) * 10 ** (-6), 3)} MB | {elapsed}s')
+            return content
+        raise FileNotFoundError(f"file ({file_name}) does not exist!")
 
     def download_all(self) -> None:
         """
