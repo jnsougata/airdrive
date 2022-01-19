@@ -132,7 +132,10 @@ class AirDrive:
             path = file_name
         print(f'[↑] Uploading | {path} | ...')
         timer_start = perf_counter()
-        r = requests.get(url)
+        try:
+            r = requests.get(url)
+        except requests.exceptions.RequestException:
+            raise ValueError("Invalid URL!")
         self.drive.put(name=path, data=r.content)
         timer_end = perf_counter()
         elapsed = round(timer_end - timer_start)

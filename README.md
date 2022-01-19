@@ -48,6 +48,18 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
       Returns None & uploads the file to the drive
     - ### Note:
       - If the file already exists in the drive, it will be overwritten
+### `upolad_from_url`
+- `upload_from_url(url, file_name, folder_name)`
+    - Parameters:
+      - **url** (str): URL of the file to be uploaded
+      - **file_name** (str): The name with the file to be uploaded
+      - **folder_name** (str): The name of the folder to upload the file to(optional)
+    - #### Returns:
+      Returns None & uploads the file to the drive
+    - ### Raises:
+      - `ValueError`: If the url is invalid
+    - ### Note:
+      - If the file already exists in the drive, it will be overwritten
 ### `rename`
 - `rename(old_file_name, new_file_name)`
     - Parameters:
