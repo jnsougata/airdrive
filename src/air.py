@@ -118,7 +118,7 @@ class AirDrive:
             url: str,
             file_name: str,
             folder_name: str = None
-    ) -> None:
+    ) -> bytes:
         """
         Upload a file from a URL to the drive
         :param url: URL from which the file content will be downloaded
@@ -140,6 +140,7 @@ class AirDrive:
         timer_end = perf_counter()
         elapsed = round(timer_end - timer_start)
         print(f"[•] Completed | {path} | {round(len(r.content) * 10 ** (-6), 3)} MB | {elapsed}s")
+        return r.content
 
     def rename(self, old_name: str, new_name: str) -> None:
         """

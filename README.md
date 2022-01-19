@@ -55,7 +55,7 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
       - **file_name** (str): The name with the file to be uploaded
       - **folder_name** (str): The name of the folder to upload the file to(optional)
     - #### Returns:
-      Returns None & uploads the file to the drive
+      Returns the file content (bytes)
     - ### Raises:
       - `ValueError`: If the url is invalid
     - ### Note:
