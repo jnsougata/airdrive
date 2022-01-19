@@ -147,7 +147,7 @@ class AirDrive:
         """
         content = self.cache(old_name)
         self.drive.put(name=new_name, data=content)
-        print(f"[!] Renamed `{old_name}` to `{new_name}`")
+        print(f"[!] Renamed | ({old_name}) -> ({new_name})")
 
     def download(self, file_name: str) -> None:
         """
@@ -217,10 +217,10 @@ class AirDrive:
         """
         if file_name:
             self.drive.delete(file_name)
-            print(f"[!] Deleted `{file_name}`")
+            print(f"[!] Deleted | ({file_name})")
         if file_names:
             self.drive.delete_many(file_names)
-            print(f"[!] Deleted `{' , '.join(file_names)}`")
+            print(f"[!] Deleted | ({' , '.join(file_names)})")
 
     def delete_all(self) -> None:
         """
