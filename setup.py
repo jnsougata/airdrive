@@ -1,31 +1,37 @@
-from setuptools import setup
+import pathlib
+from setuptools import setup, find_packages
 
 
-def readme():
-    with open('README.md') as file:
-        return file.read()
+here = pathlib.Path(__file__).parent.resolve()
 
+long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='airdrive',
-    version='0.2.1',
+    version='0.2.5',
     description='Unlimited cloud storage for your files',
-    long_description=readme(),
-    long_description_content_type="text/markdown",
-    package_dir={'airdrive': 'src'},
-    packages=['airdrive'],
-    install_requires=['deta'],
-    url='https://github.com/jnsougata/airdrive',
-    project_urls={
-        "Bug Tracker": "https://github.com/jnsougata/airdrive/issues"
-    },
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    url='https://github.com/jnsougata/AirDrive',
     author='Sougata Jana',
     author_email='jnsougata@gmail.com',
-    license='MIT',
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent"
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        "Programming Language :: Python :: 3.10",
+        'Programming Language :: Python :: 3 :: Only',
     ],
-    python_requires=">=3.6"
+    keywords='storage, cloud-storage, drive, storage-service, web-storage',
+    package_dir={'': 'src'},
+    packages=find_packages(where='src'),
+    python_requires='>=3.6, <4',
+    install_requires=['deta', 'requests'],
+    project_urls={
+        'Bug Reports': 'https://github.com/jnsougata/AirDrive/issues',
+        'Source': 'https://github.com/jnsougata/AirDrive',
+    },
 )
