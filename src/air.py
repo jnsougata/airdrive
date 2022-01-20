@@ -78,7 +78,7 @@ class AirDrive:
         """
         path = f'{folder_name}/.air'
         self.drive.put(name=path, data=b' ')
-        print(f"[+] Created folder | {folder_name}")
+        print(f"[+] Created folder ({folder_name})")
 
     def upload(
             self,

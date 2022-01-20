@@ -8,7 +8,7 @@ def readme():
 
 setup(
     name='airdrive',
-    version='0.1.8',
+    version='0.2.0',
     description='Unlimited cloud storage for your files',
     long_description=readme(),
     long_description_content_type="text/markdown",
