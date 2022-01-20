@@ -111,7 +111,7 @@ class AirDrive:
         timer_start = perf_counter()
         timer_end = perf_counter()
         elapsed = round(timer_end - timer_start)
-        print(f"[•] Completed | {file_name} | {round(len(r.content) * 10 ** (-6), 3)} MB | {elapsed}s")
+        print(f"[•] Completed | {path} | {round(len(content) * 10 ** (-6), 3)} MB | {elapsed}s")
 
     def upload_from_url(
             self,
