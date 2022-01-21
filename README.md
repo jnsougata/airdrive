@@ -13,14 +13,14 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
 - Parameters:
   - **username** (str): Name of the user
   - **password** (str): Password of the user
-  - **silent** (bool): If True, it will not show any prompts
+  - **silent** (bool): If True, it will not show any prompts (default: False)
 
 ## Logging In
 ### `drive = AirDrive.login(username, password, silent = True)`
 - Parameters:
   - **username** (str): Name of the user
   - **password** (str): Password of the user
-  - **silent** (bool): If True, it will not show any prompts
+  - **silent** (bool): If True, it will not show any prompts (default: False)
 
 ## Methods
 
