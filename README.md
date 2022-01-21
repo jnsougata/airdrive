@@ -2,17 +2,25 @@
 ## AirDrive
 AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & **download** files from your personal drive at any time using its super-fast API. 
 
-### Installation
-`pip install airdrive`
+## Installation
+### `pip install airdrive`
 
-### Import
-`from airdrive import AirDrive`
+## Import
+### `from airdrive import AirDrive`
 
-### Creating New Drive
-`drive = AirDrive.create(username: str, password: str)`
+## Creating New Account
+### `drive = AirDrive.create(username, password, silent = True)`
+- Parameters:
+  - **username** (str): Name of the user
+  - **password** (str): Password of the user
+  - **silent** (bool): If True, it will not show any prompts
 
-### Logging In
-`drive = AirDrive.login(username: str, password:str)`
+## Logging In
+### `drive = AirDrive.login(username, password, silent = True)`
+- Parameters:
+  - **username** (str): Name of the user
+  - **password** (str): Password of the user
+  - **silent** (bool): If True, it will not show any prompts
 
 ## Methods
 
@@ -39,11 +47,13 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
     - #### Returns:
       - Returns None & downloads all files in the drive to the current directory
 ### `upload`
-- `upload(local_file_path, remote_file_name)`
+- `upload(remote_file_name, )`
     - Parameters:
-      - **local_file_path** (str): Path to the file to be uploaded
       - **remote_file_name** (str): The name with the file to be uploaded
-      - **folder_name** (str): The name of the folder to upload the file to
+      - **folder_name** (str): The name of the folder to upload the file to (optional)
+      - **local_file_path** (str): Path to the file to be uploaded (optional)
+      - **file_content** (Union[bytes | str | io.TextIOBase | io.BufferedIOBase | io.RawIOBase]): Content of the file to be uploaded (optional)
+      - Note: If `local_file_path` is not provided, `file_content` must be provided
     - #### Returns:
       Returns None & uploads the file to the drive
     - ### Note:
@@ -75,6 +85,8 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
       - **file_name** (str): Name of the file to be cached
     - #### Returns:
       Returns the file content as bytes
+    - ### Raises:
+      - `FileNotFoundError`: If the file is not found in the drive
 ### `file_stream`
 - `file_stream(file_name)`
     - Parameters:
@@ -98,5 +110,5 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
     - #### Returns:
       Returns None & deletes the account from the drive permanently
     - ### Raises:
-      - `Exception`: If the file is not found in the drive
+      - `Exception`: If the account does not exist
       

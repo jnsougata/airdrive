@@ -7,19 +7,25 @@ from time import perf_counter
 
 
 class AirDrive:
-    def __init__(self, drive: Deta.Drive):
+    def __init__(self, drive: Deta.Drive, silent: bool = False):
         self.drive = drive
+        self.silent = silent
 
     def __repr__(self):
         return f"<AirDrive>"
 
+    def __log(self, prompt: str) -> None:
+        if not self.silent:
+            print(prompt)
+
     @classmethod
-    def create(cls, username: str, password: str, private_key: str = None):
+    def create(cls, username: str, password: str, private_key: str = None, silent: bool = False):
         """
         Create a new account
         :param username : new username for the account
         :param password: password for the account
         :param private_key: https://deta.sh project key (optional)
+        :param silent: if True, prompt will be shown
         :return: AirDrive object
         """
         key = private_key if private_key else KEY
@@ -36,19 +42,21 @@ class AirDrive:
             files = drive.list().get('names')
             if files:
                 return cls.login(username, password, private_key)
-            print(f"Account ({username}) created!")
+            if not silent:
+                print(f"Account ({username}) created!")
             drive.put(name='.air', data=b' ')
-            return cls(drive)
+            return cls(drive=drive, silent=silent)
         except AssertionError:
             raise ValueError("Used an invalid login token!")
 
     @classmethod
-    def login(cls, username: str, password: str, private_key: str = None):
+    def login(cls, username: str, password: str, private_key: str = None, silent: bool = False):
         """
         Login to an existing account
         :param username: username associated the account
         :param password: password associated the account
         :param private_key: https://deta.sh project key (optional)
+        :param silent: if True, prompt will be shown
         :return: AirDrive object
         """
         key = private_key if private_key else KEY
@@ -56,9 +64,10 @@ class AirDrive:
             drive = Deta(key).Drive(f'{username}_{password}')
             files = drive.list().get('names')
             if files:
-                print(f"Logged in as ({username})")
-                print('-----')
-                return cls(drive)
+                if not silent:
+                    print(f"Logged in as ({username})")
+                    print('-------')
+                return cls(drive=drive, silent=silent)
             else:
                 raise Exception(f"Account ({username}) doesn't exist!")
         except AssertionError:
@@ -78,7 +87,7 @@ class AirDrive:
         """
         path = f'{folder_name}/.air'
         self.drive.put(name=path, data=b' ')
-        print(f"[+] Created folder ({folder_name})")
+        self.__log(f"[+] Created folder ({folder_name})")
 
     def upload(
             self,
@@ -106,12 +115,12 @@ class AirDrive:
             path = f'{folder_name}/{remote_file_name}'.replace('//', '/')
         else:
             path = remote_file_name
-        print(f'[↑] Uploading | {path} | ...')
+        self.__log(f'[↑] Uploading | {path} | ...')
         self.drive.put(name=path, data=content)
         timer_start = perf_counter()
         timer_end = perf_counter()
         elapsed = round(timer_end - timer_start)
-        print(f"[•] Completed | {path} | {round(len(content) * 10 ** (-6), 3)} MB | {elapsed}s")
+        self.__log(f"[•] Completed | {path} | {round(len(content) * 10 ** (-6), 3)} MB | {elapsed}s")
 
     def upload_from_url(
             self,
@@ -130,7 +139,7 @@ class AirDrive:
             path = f'{folder_name}/{file_name}'.replace('//', '/')
         else:
             path = file_name
-        print(f'[↑] Uploading | {path} | ...')
+        self.__log(f'[↑] Uploading | {path} | ...')
         timer_start = perf_counter()
         try:
             r = requests.get(url)
@@ -139,7 +148,7 @@ class AirDrive:
         self.drive.put(name=path, data=r.content)
         timer_end = perf_counter()
         elapsed = round(timer_end - timer_start)
-        print(f"[•] Completed | {path} | {round(len(r.content) * 10 ** (-6), 3)} MB | {elapsed}s")
+        self.__log(f"[•] Completed | {path} | {round(len(r.content) * 10 ** (-6), 3)} MB | {elapsed}s")
         return r.content
 
     def rename(self, old_name: str, new_name: str) -> None:
@@ -151,7 +160,7 @@ class AirDrive:
         """
         content = self.cache(old_name)
         self.drive.put(name=new_name, data=content)
-        print(f"[!] Renamed | ({old_name}) -> ({new_name})")
+        self.__log(f"[!] Renamed | ({old_name}) -> ({new_name})")
 
     def download(self, file_name: str) -> None:
         """
@@ -161,7 +170,7 @@ class AirDrive:
         """
         resp = self.drive.get(file_name)
         if resp:
-            print(f'[↓] Downloading | {file_name} | ...')
+            self.__log(f'[↓] Downloading | {file_name} | ...')
             timer_start = perf_counter()
             with open(file_name, "wb") as f:
                 size = 0
@@ -171,7 +180,7 @@ class AirDrive:
                         f.write(chunk)
             timer_end = perf_counter()
             elapsed = round(timer_end - timer_start)
-            print(f"[•] Completed | {file_name} | {round(size * 10 ** (-6), 3)} MB | {elapsed}s")
+            self.__log(f"[•] Completed | {file_name} | {round(size * 10 ** (-6), 3)} MB | {elapsed}s")
         else:
             raise FileNotFoundError(f"file ({file_name}) does not exist!")
 
@@ -194,13 +203,13 @@ class AirDrive:
         """
         resp = self.drive.get(file_name)
         if resp:
-            print(f'[🗎] Caching | {file_name} | ...')
+            self.__log(f'[🗎] Caching | {file_name} | ...')
             timer_start = perf_counter()
             byte_list = [chunk for chunk in resp.iter_chunks(1024)]
             content = b''.join(byte_list)
             timer_end = perf_counter()
             elapsed = round(timer_end - timer_start)
-            print(f'[🗎] Completed | {file_name} | {round(len(content) * 10 ** (-6), 3)} MB | {elapsed}s')
+            self.__log(f'[🗎] Completed | {file_name} | {round(len(content) * 10 ** (-6), 3)} MB | {elapsed}s')
             return content
         raise FileNotFoundError(f"file ({file_name}) does not exist!")
 
@@ -221,10 +230,10 @@ class AirDrive:
         """
         if file_name:
             self.drive.delete(file_name)
-            print(f"[!] Deleted | ({file_name})")
+            self.__log(f"[!] Deleted | ({file_name})")
         if file_names:
             self.drive.delete_many(file_names)
-            print(f"[!] Deleted | ({' , '.join(file_names)})")
+            self.__log(f"[!] Deleted | ({' , '.join(file_names)})")
 
     def delete_all(self) -> None:
         """
@@ -237,7 +246,7 @@ class AirDrive:
         except ValueError:
             self.drive.put(name='.air', data=b' ')
         self.drive.delete_many(files)
-        print("[!] Deleted all files!")
+        self.__log("[!] Deleted all files!")
 
     def delete_account(self) -> None:
         """

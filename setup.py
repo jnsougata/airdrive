@@ -8,7 +8,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='airdrive',
-    version='0.2.5',
+    version='0.2.6',
     description='Unlimited cloud storage for your files',
     long_description=long_description,
     long_description_content_type='text/markdown',
