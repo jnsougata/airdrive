@@ -79,7 +79,12 @@ class AirDrive:
         """
         :return: list of files in the account
         """
-        return self.__drive.list().get('names')
+        files = self.__drive.list().get('names')
+        try:
+            files.remove('.air')
+            return files
+        except ValueError:
+            return files
 
     def create_folder(self, folder_name: str) -> None:
         """
@@ -167,7 +172,7 @@ class AirDrive:
             self.__log(f"[!] Renamed | ({old_name}) -> ({new_name})")
             self.__drive.delete(old_name)
         else:
-            raise NotFound(f'file ({old_name}) does not exist')
+            raise FileNotFound(f'file ({old_name}) does not exist')
 
     def download(self, file_name: str) -> None:
         """
@@ -189,7 +194,7 @@ class AirDrive:
             elapsed = round(timer_end - timer_start)
             self.__log(f"[•] Completed | {file_name} | {round(size * 10 ** (-6), 3)} MB | {elapsed}s")
         else:
-            raise NotFound(f"file ({file_name}) does not exist")
+            raise FileNotFound(f"file ({file_name}) does not exist")
 
     def file_stream(self, file_name: str) -> bytes:
         """
@@ -200,7 +205,7 @@ class AirDrive:
         stream = self.__drive.get(file_name)
         if stream:
             return stream
-        raise NotFound(f"file ({file_name}) does not exist")
+        raise FileNotFound(f"file ({file_name}) does not exist")
 
     def cache(self, file_name: str) -> bytes:
         """
@@ -218,7 +223,7 @@ class AirDrive:
             elapsed = round(timer_end - timer_start)
             self.__log(f'[🗎] Completed | {file_name} | {round(len(content) * 10 ** (-6), 3)} MB | {elapsed}s')
             return content
-        raise NotFound(f"file ({file_name}) does not exist")
+        raise FileNotFound(f"file ({file_name}) does not exist")
 
     def download_all(self) -> None:
         """
@@ -228,22 +233,26 @@ class AirDrive:
         for file_name in self.files():
             self.download(file_name)
 
-    def delete(self, file_name: str = None, file_names: list = None) -> None:
+    def delete(self, file_name: str = None, file_names: list[str] = None) -> None:
         """
         Delete a file from the drive
         :param file_name: file name/path to delete
         :param file_names: list of file names/paths to delete
         :return: None
         """
-        if file_name == '.air' or '.air' in file_names:
-            raise DoNotDelete(f"({file_name}) is a system file and cannot be deleted")
+        if file_name and file_name != '.air':
+            self.__drive.delete(file_name)
+            self.__log(f"[!] Deleted | ({file_name})")
+
+        if file_names:
+            files = [file for file in file_names if file != '.air']
+            try:
+                self.__drive.delete_many(files)
+            except AssertionError:
+                raise InvalidParameter(f"Parameter 'file_names' must be a list of non-empty strings")
+            self.__log(f"[!] Deleted | ({' , '.join(files)})")
         else:
-            if file_name:
-                self.__drive.delete(file_name)
-                self.__log(f"[!] Deleted | ({file_name})")
-            if file_names:
-                self.__drive.delete_many(file_names)
-                self.__log(f"[!] Deleted | ({' , '.join(file_names)})")
+            raise InvalidParameter(f"Parameter 'file_names' must be a list of non-empty strings")
 
     def delete_all(self) -> None:
         """

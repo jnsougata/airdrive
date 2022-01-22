@@ -30,11 +30,11 @@ class InvalidFile(AirDriveException):
         super().__init__(message)
 
 
-class NotFound(AirDriveException):
+class FileNotFound(AirDriveException):
     def __init__(self, message):
         super().__init__(message)
 
 
-class DoNotDelete(AirDriveException):
+class InvalidParameter(AirDriveException):
     def __init__(self, message):
         super().__init__(message)
