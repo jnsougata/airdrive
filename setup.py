@@ -29,7 +29,7 @@ setup(
     package_dir={'': 'src'},
     packages=find_packages(where='src'),
     python_requires='>=3.6, <4',
-    install_requires=['deta', 'requests'],
+    install_requires=['deta', 'urllib3'],
     project_urls={
         'Bug Reports': 'https://github.com/jnsougata/AirDrive/issues',
         'Source': 'https://github.com/jnsougata/AirDrive',

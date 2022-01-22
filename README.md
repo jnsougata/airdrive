@@ -53,7 +53,7 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
       - **folder_name** (str): The name of the folder to upload the file to (optional)
       - **local_file_path** (str): Path to the file to be uploaded (optional)
       - **file_content** (Union[bytes | str | io.TextIOBase | io.BufferedIOBase | io.RawIOBase]): Content of the file to be uploaded (optional)
-      - Note: If `local_file_path` is not provided, `file_content` must be provided
+      - Note: If `local_file_path` is not provided, `file_content` must be provided. Do not mix both.
     - #### Returns:
       Returns None & uploads the file to the drive
     - ### Note:
