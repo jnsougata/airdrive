@@ -1,8 +1,9 @@
 import io
-from .key import KEY
+from .dcd import *
 from .errors import *
 from deta import Deta
 from typing import Union
+from binascii import unhexlify
 from time import perf_counter
 from urllib3 import PoolManager
 
@@ -30,10 +31,10 @@ class AirDrive:
         :param silent: if True, prompt will be shown
         :return: AirDrive object
         """
-        key = private_key if private_key else KEY
+        key = private_key if private_key else PK
         if len(username) < 5:
             raise InvalidCredentials("Use at least 5 ")
-        if password == KEY:
+        if password == PK:
             raise InvalidCredentials("Don't use project key as password")
         if len(password) < 8:
             raise InvalidCredentials("Use at least 8 characters")
@@ -61,7 +62,7 @@ class AirDrive:
         :param silent: if True, prompt will be shown
         :return: AirDrive object
         """
-        key = private_key if private_key else KEY
+        key = private_key if private_key else PK
         try:
             drive = Deta(key).Drive(f'{username}_{password}')
             files = drive.list().get('names')

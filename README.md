@@ -110,5 +110,4 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
     - #### Returns:
       Returns None & deletes the account from the drive permanently
     - ### Raises:
-      - `Exception`: If the account does not exist
-      
+      - `AccountNotFound`: If the account does not exist

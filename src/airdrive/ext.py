@@ -9,5 +9,5 @@ Note: However no one will be able to get data only with this key.
 They have to know the drive password in order to interact with the drive .
 """
 
+SD = "16d4b65483b4c49664a407142483278795351544058366a63764a7238787e443f5a697a74756570336"
 
-KEY = "c0uetzyj_4Nxx2zFsjf8PDQSYxr8BApJFiLK8EkMa"
