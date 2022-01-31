@@ -14,6 +14,7 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
   - **username** (str): Name of the user
   - **password** (str): Password of the user
   - **silent** (bool): If True, it will not show any prompts (default: False)
+  - **raises**: `InvalidCredentials` , `InvalidToken`
 
 ## Logging In
 ### `drive = AirDrive.login(username, password, silent = True)`
@@ -21,6 +22,7 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
   - **username** (str): Name of the user
   - **password** (str): Password of the user
   - **silent** (bool): If True, it will not show any prompts (default: False)
+  - **raises**: `InvalidCredentials` , `InvalidToken`
 
 ## Methods
 
@@ -41,11 +43,11 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
     - #### Returns:
       Returns None & downloads the file to the current directory
     - #### Raises:
-      - `FileNotFoundError`: If the file is not found in the drive
+      - `FileNotFound`
 ### `download_all`
 - `download_all()`
     - #### Returns:
-      - Returns None & downloads all files in the drive to the current directory
+      - Downloads all files in the drive to the current directory
 ### `upload`
 - `upload(remote_file_name, )`
     - Parameters:
@@ -56,6 +58,8 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
       - Note: If `local_file_path` is not provided, `file_content` must be provided. Do not mix both.
     - #### Returns:
       Returns None & uploads the file to the drive
+    - #### Raises:
+      - `InvalidFile`
     - ### Note:
       - If the file already exists in the drive, it will be overwritten
 ### `upolad_from_url`
@@ -67,7 +71,7 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
     - #### Returns:
       Returns the file content (bytes)
     - ### Raises:
-      - `ValueError`: If the url is invalid
+      - `InvalidURL`
     - ### Note:
       - If the file already exists in the drive, it will be overwritten
 ### `rename`
@@ -77,6 +81,8 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
       - **new_file_name** (str): New name of the file
     - #### Returns:
       Returns None & re-uploads the file in the drive with new name
+    - #### Raises:
+      - `FileNotFound`
     - ### Note:
       - Might take a while for large files
 ### `cache`
@@ -86,15 +92,15 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
     - #### Returns:
       Returns the file content as bytes
     - ### Raises:
-      - `FileNotFoundError`: If the file is not found in the drive
+      - `FileNotFound`
 ### `file_stream`
 - `file_stream(file_name)`
     - Parameters:
       - **file_name** (str): Name of the file to be streamed
     - #### Returns:
-      Returns the file content as stream
+      Returns the file content as streaming body
     - ### Raises:
-      - `FileNotFoundError`: If the file is not found in the drive
+      - `FileNotFound`
 ### `delete`
 - `delete(file_name)`
     - Parameters:
@@ -110,4 +116,4 @@ AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & 
     - #### Returns:
       Returns None & deletes the account from the drive permanently
     - ### Raises:
-      - `AccountNotFound`: If the account does not exist
+      - `AccountNotFound`

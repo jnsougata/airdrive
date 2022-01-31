@@ -41,7 +41,7 @@ class AirDrive:
         if username == password:
             raise InvalidCredentials("Username and password can't be the same")
         try:
-            drive = Deta(key).Drive(f'{username}_{password}')
+            drive = Deta(key).Drive(f'{username}_{password}'.replace('#', '_'))
             files = drive.list().get('names')
             if files:
                 return cls.login(username, password, private_key)
