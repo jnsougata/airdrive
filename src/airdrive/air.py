@@ -1,9 +1,7 @@
 import io
-from .dcd import *
 from .errors import *
 from deta import Deta
 from typing import Union
-from binascii import unhexlify
 from time import perf_counter
 from urllib3 import PoolManager
 
@@ -22,26 +20,25 @@ class AirDrive:
             print(prompt)
 
     @classmethod
-    def create(cls, username: str, password: str, private_key: str = None, silent: bool = False):
-        """
-        Create a new account
-        :param username: new username for the account
-        :param password: password for the account
-        :param private_key: https://deta.sh project key (optional)
-        :param silent: if True, prompt will be shown
-        :return: AirDrive object
-        """
-        key = private_key if private_key else PK
+    def create(
+            cls,
+            username: str,
+            password: str,
+            private_key: str = None,
+            silent: bool = False
+    ):
+        if not private_key:
+            raise ValueError("You must specify a private key. Visit https://deta.sh to get one.")
         if len(username) < 5:
             raise InvalidCredentials("Use at least 5 ")
-        if password == PK:
+        if password == private_key:
             raise InvalidCredentials("Don't use project key as password")
         if len(password) < 8:
             raise InvalidCredentials("Use at least 8 characters")
         if username == password:
             raise InvalidCredentials("Username and password can't be the same")
         try:
-            drive = Deta(key).Drive(f'{username}_{password}'.replace('#', '_'))
+            drive = Deta(private_key).Drive(f'{username}_{password}'.replace('#', '_'))
             files = drive.list().get('names')
             if files:
                 return cls.login(username, password, private_key)
@@ -53,18 +50,9 @@ class AirDrive:
             raise InvalidToken("Used an invalid login token")
 
     @classmethod
-    def login(cls, username: str, password: str, private_key: str = None, silent: bool = False):
-        """
-        Login to an existing account
-        :param username: username associated the account
-        :param password: password associated the account
-        :param private_key: https://deta.sh project key (optional)
-        :param silent: if True, prompt will be shown
-        :return: AirDrive object
-        """
-        key = private_key if private_key else PK
+    def login(cls, username: str, password: str, private_key: str, silent: bool = False):
         try:
-            drive = Deta(key).Drive(f'{username}_{password}')
+            drive = Deta(private_key).Drive(f'{username}_{password}')
             files = drive.list().get('names')
             if files:
                 if not silent:
