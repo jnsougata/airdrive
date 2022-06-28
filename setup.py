@@ -12,7 +12,7 @@ setup(
     description='Unlimited cloud storage for your files',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/jnsougata/AirDrive',
+    url='https://github.com/jnsougata/airdrive',
     author='Sougata Jana',
     author_email='jnsougata@gmail.com',
     classifiers=[
@@ -31,7 +31,7 @@ setup(
     python_requires='>=3.6, <4',
     install_requires=['deta', 'urllib3'],
     project_urls={
-        'Bug Reports': 'https://github.com/jnsougata/AirDrive/issues',
-        'Source': 'https://github.com/jnsougata/AirDrive',
+        'Bug Reports': 'https://github.com/jnsougata/airdrive/issues',
+        'Source': 'https://github.com/jnsougata/airdrive',
     },
 )
