@@ -1,3 +1,5 @@
+[![Release](https://github.com/jnsougata/airdrive/actions/workflows/publish.yml/badge.svg)](https://github.com/jnsougata/airdrive/actions/workflows/publish.yml)
+
 ![logo](https://raw.githubusercontent.com/jnsougata/AirDrive/main/ui/air.png)   
 ## AirDrive
 AirDrive lets you store **unlimited** files to cloud for **free**. **Upload** & **download** files from your personal drive at any time using its super-fast API. 
