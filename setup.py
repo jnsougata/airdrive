@@ -13,7 +13,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/jnsougata/airdrive',
-    author='Sougata Jana',
+    author='jnsougata',
     author_email='jnsougata@gmail.com',
     classifiers=[
         'License :: OSI Approved :: MIT License',
